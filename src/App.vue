@@ -3,7 +3,9 @@
     HeaderLayout
     .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6")
       .item-wrap(class="flex flex-col gap-1")
-        span(class="text-xl font-bold") 輸入專案路徑
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100250_MEW.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 專案路徑
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" :placeholder="localRoute" v-model="projectPath")
           el-button(type="primary" @click="savePath('project')") 儲存
@@ -12,13 +14,17 @@
           span {{ projectPathCommand }}
           el-button(type="primary" @click="copyCommand(projectPathCommand)" icon="el-icon-copy-document")
       .item-wrap(class="flex flex-col gap-1")
-        span(class="text-xl font-bold") 輸入得卡包儲存路徑
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100140_PIKACHU.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 輸入得卡包儲存路徑
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" :placeholder="getCardRoute" v-model="getCardPath")
           el-button(type="primary" @click="savePath('getCard')") 儲存
       .item-wrap(class="flex flex-col gap-1")
-        span(class="text-xl font-bold") 創建帳號與啟動得卡驗證
-        .form-item(class="flex flex-row gap-3 items-center")
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100080_KAMEX.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 創建帳號與啟動得卡驗證
+        .form-item(class="flex flex-row gap-3 items-end")
           div(class="flex flex-col gap-2")
             span 選擇創建帳號模擬器ID
             el-select(v-model="createAccountItem" multiple placeholder="請選擇")
@@ -38,8 +44,10 @@
           span {{ createAndGetCardCommand }}
           el-button(type="primary" @click="copyCommand(createAndGetCardCommand)" icon="el-icon-copy-document")
       .item-wrap(class="flex flex-col gap-1")
-        span(class="text-xl font-bold") 單獨啟動創建帳號
-        .form-item(class="flex flex-row gap-3 items-center")
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100040_LIZARDON.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 單獨啟動創建帳號
+        .form-item(class="flex flex-row gap-3 items-end")
           div(class="flex flex-col gap-2")
             span 選擇創建帳號模擬器ID
             el-select(v-model="createAccountItemAlone" placeholder="請選擇")
@@ -48,22 +56,71 @@
             span 選擇卡包
             el-select(v-model="cardType" placeholder="請選擇" clearable)
               el-option(v-for="item in cardTypeOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            el-checkbox(v-model="isEventFlg") 得卡挑戰活動
           el-button(type="primary" @click="handleSubmit('createAccountItemAlone')") 產生指令
         div(v-if="createAccountCommand" class="flex flex-row gap-2 items-center")
           span {{ createAccountCommand }}
           el-button(type="primary" @click="copyCommand(createAccountCommand)" icon="el-icon-copy-document")
+      .item-wrap(class="flex flex-col gap-1")
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100030_NYARTH.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 單獨啟動得卡驗證
+        .form-item(class="flex flex-row gap-3 items-end")
+          div(class="flex flex-col gap-2")
+            span 選擇啟動得卡驗證模擬器ID
+            el-select(v-model="getCardItemAlone" placeholder="請選擇" clearable)
+              el-option(v-for="item in getCardOptionList" :key="item.value" :label="item.label" :value="item.value")
+          div(class="flex flex-col gap-2")
+            el-checkbox(v-model="isEventFlg") 得卡挑戰活動
+          el-button(type="primary" @click="handleSubmit('getCardItemAlone')") 產生指令
+        div(v-if="getCardCommand" class="flex flex-row gap-2 items-center")
+          span {{ getCardCommand }}
+          el-button(type="primary" @click="copyCommand(getCardCommand)" icon="el-icon-copy-document")
+      .item-wrap(class="flex flex-col gap-1")
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100130_SIRNIGHT.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 自動加好友
+        .form-item(class="flex flex-row gap-3 items-end")
+          div(class="flex flex-col gap-2")
+            span 選擇模擬器ID
+            el-select(v-model="addFriendId" placeholder="請選擇")
+              el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
+          div(class="flex flex-col gap-2")
+            span 好友代碼
+            el-input(type="text" placeholder="3782321085029142" v-model="friendCode")
+          el-button(type="primary" @click="handleSubmit('autoAddFriend')") 產生指令
+        div(v-if="autoAddFriendCommand" class="flex flex-row gap-2 items-center")
+          span {{ autoAddFriendCommand }}
+          el-button(type="primary" @click="copyCommand(autoAddFriendCommand)" icon="el-icon-copy-document")
+      .item-wrap(class="flex flex-col gap-1")
+        div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100100_MEWTWO.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 模擬器寫入帳號
+        .form-item(class="flex flex-row gap-3 items-end")
+          div(class="flex flex-col gap-2")
+            span 選擇模擬器ID
+            el-select(v-model="makeAccountPushId" placeholder="請選擇")
+              el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
+          div(class="flex flex-col gap-2")
+            span xml檔名
+            el-input(type="text" :placeholder="20241228124210093" v-model="xmlName")
+          el-button(type="primary" @click="handleSubmit('makeAccountPush')") 產生指令
+        div(v-if="makeAccountPushCommand" class="flex flex-row gap-2 items-center")
+          span {{ makeAccountPushCommand }}
+          el-button(type="primary" @click="copyCommand(makeAccountPushCommand)" icon="el-icon-copy-document")
+      el-button(type="danger" @click="clearAllRecord" icon="el-icon-delete") 清除所有紀錄
+    FooterLayout
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import HeaderLayout from './components/HeaderLayout.vue'
+import FooterLayout from './components/FooterLayout.vue'
 export default {
   name: 'App',
   components: {
     HelloWorld,
     HeaderLayout,
+    FooterLayout,
   },
   data() {
     return {
@@ -76,6 +133,10 @@ export default {
       getCardItem: '',
       createAccountItemAlone: '',
       getCardItemAlone: '',
+      friendCode: '',
+      addFriendId: '',
+      makeAccountPushId: '',
+      xmlName: '',
       createAccountOptionList: [
         {
           label: '0',
@@ -115,6 +176,8 @@ export default {
       createAccountCommand: '',
       getCardCommand: '',
       projectPathCommand: '',
+      autoAddFriendCommand: '',
+      makeAccountPushCommand: '',
       cardType: '',
       cardTypeOptionList: [
         {
@@ -137,18 +200,29 @@ export default {
     }
   },
   mounted() {
-    this.getCardOptionList = this.createAccountOptionList
+    this.getCardOptionList = this.createAccountOptionList;
+    this.projectPath = localStorage.getItem('projectPath') || '';
+    this.getCardPath = localStorage.getItem('getCardPath') || '';
+    const savedItems = localStorage.getItem('createAccountItem')
+    this.createAccountItem = savedItems ? savedItems.split(',') : []
+    this.getCardItem = localStorage.getItem('getCardItem') || '';
+    this.getCardItemAlone = localStorage.getItem('getCardItemAlone') || '';
+    this.isEventFlg = JSON.parse(localStorage.getItem('isEventFlg')) || false;
+    this.createAccountItemAlone = localStorage.getItem('createAccountItemAlone') || '';
+    this.friendCode = localStorage.getItem('friendCode') || '';
+    this.addFriendId = localStorage.getItem('addFriendId') || '';
+    this.makeAccountPushId = localStorage.getItem('makeAccountPushId') || '';
+    this.cardType = localStorage.getItem('cardType') || '';
   },
   watch: {
     createAccountItem: {
       handler(newVal) {
-        console.log(newVal);
         this.getCardOptionList = this.createAccountOptionList.filter(option => 
           !newVal.includes(option.value)
         )
-        this.getCardItem = '';
+        // this.getCardItem = '';
       },
-      immediate: true,
+      // immediate: true,
     }
   },
   methods: {
@@ -157,12 +231,10 @@ export default {
         project: {
           key: 'projectPath',
           value: this.projectPath,
-          successMessage: '專案路徑'
         },
         getCard: {
           key: 'getCardPath',
           value: this.getCardPath,
-          successMessage: '得卡包儲存路徑'
         }
       }
 
@@ -179,7 +251,7 @@ export default {
         if (result === config.value) {
           this.$notify({
             title: '成功',
-            message: `${config.successMessage}${config.value}已成功儲存`,
+            message: `${config.value}已成功儲存`,
             type: 'success'
           })
         } else {
@@ -194,14 +266,83 @@ export default {
       }
     },
     handleSubmit(type) {
-      console.log(this.createAccountItem, this.getCardItem, this.isEventFlg);
-      if(type === 'createAndGetCard') {
-        this.createAndGetCardCommand = this.buildCommand(type)
-      } else if (type === 'projectPath') {
-        this.projectPathCommand = `cd ${this.projectPath}`
-      } else if (type === 'createAccountItemAlone') {
-        this.createAccountCommand = this.buildCommand(type)
+      const validationConfig = {
+        createAndGetCard: {
+          fields: [
+            { key: 'createAccountItem', message: '需要選擇模擬器ID', validator: value => value.length > 0 },
+            { key: 'getCardItem', message: '需要選擇得卡驗證模擬器ID', validator: value => value !== '' },
+            { key: 'cardType', message: '需要選擇卡包', validator: value => value !== '' }
+          ],
+          command: 'createAndGetCardCommand',
+          storage: ['createAccountItem', 'getCardItem', 'isEventFlg', 'cardType']
+        },
+        projectPath: {
+          fields: [
+            { key: 'projectPath', message: '需要填寫專案路徑', validator: value => value !== '' }
+          ],
+          command: 'projectPathCommand',
+          storage: ['projectPath']
+        },
+        createAccountItemAlone: {
+          fields: [
+            { key: 'createAccountItemAlone', message: '需要選擇模擬器ID', validator: value => value !== '' },
+            { key: 'cardType', message: '需要選擇卡包', validator: value => value !== '' }
+          ],
+          command: 'createAccountCommand',
+          storage: ['createAccountItemAlone', 'cardType']
+        },
+        getCardItemAlone: {
+          fields: [
+            { key: 'getCardItemAlone', message: '需要選擇模擬器ID', validator: value => value !== '' }
+          ],
+          command: 'getCardCommand',
+          storage: ['getCardItemAlone', 'isEventFlg']
+        },
+        autoAddFriend: {
+          fields: [
+            { key: 'addFriendId', message: '需要選擇模擬器ID', validator: value => value !== '' },
+            { key: 'getCardPath', message: '需要輸入得卡包路徑', validator: value => value !== '' }
+          ],
+          command: 'autoAddFriendCommand',
+          storage: ['addFriendId', 'getCardPath', 'friendCode']
+        },
+        makeAccountPush: {
+          fields: [
+            { key: 'makeAccountPushId', message: '需要選擇模擬器ID', validator: value => value !== '' },
+            { key: 'getCardPath', message: '需要輸入得卡包路徑', validator: value => value !== '' },
+            { key: 'xmlName', message: '需要輸入.xml檔名', validator: value => value !== '' }
+          ],
+          command: 'makeAccountPushCommand',
+          storage: ['makeAccountPushId', 'getCardPath']
+        }
       }
+
+      const config = validationConfig[type]
+      if (!config) return
+
+      // 驗證必填欄位
+      for (const field of config.fields) {
+        if (!field.validator(this[field.key])) {
+          this.$notify({
+            title: '必填',
+            message: field.message,
+            type: 'error'
+          })
+          return
+        }
+      }
+
+      // 生成指令
+      if (type === 'projectPath') {
+        this[config.command] = `cd ${this.projectPath}`
+      } else {
+        this[config.command] = this.buildCommand(type)
+      }
+
+      // 儲存到 localStorage
+      config.storage.forEach(key => {
+        localStorage.setItem(key, this[key])
+      })
     },
     buildCommand(type) {
       const commandConfig = {
@@ -225,33 +366,97 @@ export default {
             pack: this.cardType,
             notify_rarity: 'SR,SAR',
             check: true,
+          }
+        },
+        getCardItemAlone: {
+          script: '03-makeAccounts-check-auto.ps1',
+          params: {
+            device_index: this.getCardItemAlone,
+            account_num: 12,
             event_flg: this.isEventFlg
           }
-        }
+        },
+        autoAddFriend: {
+          script: '06-addFriend.ps1',
+          params: {
+            device_index: this.addFriendId,
+            target_path: this.getCardPath,
+            fc: this.friendCode,
+          }
+        },
+        makeAccountPush: {
+          script: '02-makeAccounts-push.ps1',
+          params: {
+            device_index: this.makeAccountPushId,
+            source_file: `${this.getCardPath}\\${this.xmlName}.xml`,
+          }
+        },
       }
       const config = commandConfig[type]
       if (!config) return ''
 
       return this.formatCommand(config.script, config.params)
     },
-    // 格式化命令的方法
     formatCommand(script, params) {
       const paramStrings = Object.entries(params).map(([key, value]) => {
-        // 處理布林值參數
         if (typeof value === 'boolean') {
           return value ? `-${key}` : ''
         }
-        // 處理空值
         if (!value) return ''
-        // 一般參數
         return `-${key} ${value}`
       })
-      .filter(Boolean) // 移除空字串
+      .filter(Boolean)
       return `.\\${script} ${paramStrings.join(' ')}`
     },
     copyCommand(command) {
-      navigator.clipboard.writeText(command);
+      navigator.clipboard.writeText(command)
+        .then(() => {
+          // 複製成功通知
+          this.$notify({
+            title: '成功',
+            message: '指令已複製到剪貼簿',
+            type: 'success',
+            duration: 2000  // 通知顯示時間（毫秒）
+          })
+        })
+        .catch(err => {
+          // 複製失敗通知
+          this.$notify({
+            title: '錯誤',
+            message: `複製失敗：${err.message}`,
+            type: 'error',
+            duration: 3000
+          })
+        })
     },
+    clearAllRecord() {
+      this.$confirm('此操作將刪除所有欄位紀錄, 是否繼續?', '提示', {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.clear();
+        this.projectPath = '';
+        this.getCardPath = '';
+        this.createAccountItem = [];
+        this.getCardItem = '';
+        this.createAccountItemAlone = '';
+        this.getCardItemAlone = '';
+        this.friendCode = '';
+        this.addFriendId = '';
+        this.makeAccountPushId = '';
+        this.cardType = '';
+        this.isEventFlg = false;
+        this.xmlName = '';
+        this.$notify({
+          title: '成功',
+          message: '所有紀錄已清除',
+          type: 'success'
+        })
+      }).catch(() => {
+        return
+      });
+    }
   }
 }
 </script>
