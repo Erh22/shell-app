@@ -381,7 +381,7 @@ export default {
           params: {
             device_index: this.addFriendId,
             target_path: this.getCardPath,
-            fc: this.friendCode,
+            fc: this.friendCode ? `"${this.friendCode}"` : '',
           }
         },
         makeAccountPush: {
