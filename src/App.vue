@@ -202,8 +202,8 @@ export default {
           value: '4'
         },
       ],
-      secretBtn1: true,
-      secretBtn2: true,
+      secretBtn1: false,
+      secretBtn2: false,
       secretFriendCodeList: [
         {
           label: '兒兒',
