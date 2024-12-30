@@ -95,6 +95,22 @@
           el-button(type="primary" @click="copyCommand(autoAddFriendCommand)" icon="el-icon-copy-document")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100060_FUSHIGIBANA.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 自動加多組好友
+        .form-item(class="flex flex-row gap-3 items-end")
+          div(class="flex flex-col gap-2")
+            span 選擇模擬器ID
+            el-select(v-model="addFriendArrayId" placeholder="請選擇")
+              el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
+          div(class="flex flex-col gap-2")
+            span 好友代碼(用逗號隔開)
+            el-input(type="text" placeholder="3782321085029142,3961502832604782" v-model="friendCodeArr" class="w-[700px]")
+          el-button(type="primary" @click="handleSubmit('autoAddFriendArray')") 產生指令
+        div(v-if="autoAddFriendArrayCommand" class="flex flex-row gap-2 items-center")
+          span {{ autoAddFriendArrayCommand }}
+          el-button(type="primary" @click="copyCommand(autoAddFriendArrayCommand)" icon="el-icon-copy-document")
+      .item-wrap(class="flex flex-col gap-1")
+        div(class="flex flex-row items-center")
           img(src="../src/assets/img/COIN_100100_MEWTWO.png" class="w-7 h-7")
           span(class="text-xl font-bold") 模擬器寫入帳號
         .form-item(class="flex flex-row gap-3 items-end")
@@ -109,7 +125,7 @@
         div(v-if="makeAccountPushCommand" class="flex flex-row gap-2 items-center")
           span {{ makeAccountPushCommand }}
           el-button(type="primary" @click="copyCommand(makeAccountPushCommand)" icon="el-icon-copy-document")
-      el-button(type="danger" @click="clearAllRecord" icon="el-icon-delete") 清除所有紀錄
+      el-button(type="danger" @click="clearAllRecord" icon="el-icon-delete" class="my-4") 清除所有紀錄
       .list-wrap(v-if="secretBtn1 && secretBtn2" class="absolute top-[300px] right-[0px] p-4 bg-white border border-gray-300 rounded-lg flex justify-center items-center flex-col gap-2")
         div(v-for="item in secretFriendCodeList" :key="item.value" @click="copyCommand(item.value)")
           el-button {{ item.label }}
@@ -141,6 +157,7 @@ export default {
       friendCode: '',
       addFriendId: '',
       makeAccountPushId: '',
+      addFriendArrayId: '',
       xmlName: '',
       createAccountOptionList: [
         {
@@ -183,6 +200,7 @@ export default {
       projectPathCommand: '',
       autoAddFriendCommand: '',
       makeAccountPushCommand: '',
+      autoAddFriendArrayCommand: '',
       cardType: '',
       cardTypeOptionList: [
         {
@@ -230,6 +248,7 @@ export default {
           value: '7574249243230041'
         },
       ],
+      friendCodeArr: '',
     }
   },
   mounted() {
@@ -246,6 +265,8 @@ export default {
     this.addFriendId = localStorage.getItem('addFriendId') || '';
     this.makeAccountPushId = localStorage.getItem('makeAccountPushId') || '';
     this.cardType = localStorage.getItem('cardType') || '';
+    this.friendCodeArr = localStorage.getItem('friendCodeArr') || '';
+    this.addFriendArrayId = localStorage.getItem('addFriendArrayId') || '';
   },
   watch: {
     createAccountItem: {
@@ -347,6 +368,15 @@ export default {
           ],
           command: 'makeAccountPushCommand',
           storage: ['makeAccountPushId', 'getCardPath']
+        },
+        autoAddFriendArray: {
+          fields: [
+            { key: 'addFriendArrayId', message: '需要選擇模擬器ID', validator: value => value !== '' },
+            { key: 'getCardPath', message: '需要輸入得卡包路徑', validator: value => value !== '' },
+            { key: 'friendCodeArr', message: '需要輸入好友代碼', validator: value => value !== '' }
+          ],
+          command: 'autoAddFriendArrayCommand',
+          storage: ['addFriendArrayId', 'getCardPath', 'friendCodeArr']
         }
       }
 
@@ -424,6 +454,15 @@ export default {
             source_file: `${this.getCardPath}\\${this.xmlName}.xml`,
           }
         },
+        // .\06-addFriend-array.ps1 -device_index 0 -target_path "C:\Users\88692\Downloads\PTCG" -fc @("3782321085029142",”3961502832604782”)
+        autoAddFriendArray: {
+          script: '06-addFriend-array.ps1',
+          params: {
+            device_index: this.addFriendId,
+            target_path: this.getCardPath,
+            fc: this.friendCodeArr ? `@(${this.friendCodeArr.split(',').map(code => `"${code.trim()}"`).join(',')})` : '',
+          }
+        }
       }
       const config = commandConfig[type]
       if (!config) return ''
