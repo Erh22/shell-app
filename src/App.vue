@@ -1,10 +1,11 @@
 <template lang="pug">
   #app
     HeaderLayout
-    .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6")
+    .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6 relative")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
-          img(src="../src/assets/img/COIN_100250_MEW.png" class="w-7 h-7")
+          img(v-if="secretBtn2" src="../src/assets/img/COIN_100240_PremiumSet.png" class="w-7 h-7" @click="secretBtn2 = !secretBtn2")
+          img(v-else src="../src/assets/img/COIN_100250_MEW.png" class="w-7 h-7" @click="secretBtn2 = !secretBtn2")
           span(class="text-xl font-bold") 專案路徑
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" :placeholder="localRoute" v-model="projectPath")
@@ -77,7 +78,8 @@
           el-button(type="primary" @click="copyCommand(getCardCommand)" icon="el-icon-copy-document")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
-          img(src="../src/assets/img/COIN_100130_SIRNIGHT.png" class="w-7 h-7")
+          img(v-if="secretBtn1" src="../src/assets/img/COIN_100240_PremiumSet.png" class="w-7 h-7" @click="secretBtn1 = !secretBtn1")
+          img(v-else src="../src/assets/img/COIN_100130_SIRNIGHT.png" class="w-7 h-7" @click="secretBtn1 = !secretBtn1")
           span(class="text-xl font-bold") 自動加好友
         .form-item(class="flex flex-row gap-3 items-end")
           div(class="flex flex-col gap-2")
@@ -108,6 +110,9 @@
           span {{ makeAccountPushCommand }}
           el-button(type="primary" @click="copyCommand(makeAccountPushCommand)" icon="el-icon-copy-document")
       el-button(type="danger" @click="clearAllRecord" icon="el-icon-delete") 清除所有紀錄
+      .list-wrap(v-if="secretBtn1 && secretBtn2" class="absolute top-[300px] right-[0px] p-4 bg-white border border-gray-300 rounded-lg flex justify-center items-center flex-col gap-2")
+        div(v-for="item in secretFriendCodeList" :key="item.value" @click="copyCommand(item.value)")
+          el-button {{ item.label }}
     FooterLayout
 </template>
 
@@ -195,6 +200,34 @@ export default {
         {
           label: '夢幻',
           value: '4'
+        },
+      ],
+      secretBtn1: true,
+      secretBtn2: true,
+      secretFriendCodeList: [
+        {
+          label: '兒兒',
+          value: '3782321085029142'
+        },
+        {
+          label: '室友',
+          value: '9691530321487258'
+        },
+        {
+          label: 'choco',
+          value: '1864817649911196'
+        },
+        {
+          label: 'Hsun',
+          value: '0340902103938840'
+        },
+        {
+          label: '烏鴉',
+          value: '0903333396051784'
+        },
+        {
+          label: '教主',
+          value: '7574249243230041'
         },
       ],
     }
@@ -456,7 +489,7 @@ export default {
       }).catch(() => {
         return
       });
-    }
+    },
   }
 }
 </script>
