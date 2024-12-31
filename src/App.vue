@@ -240,6 +240,10 @@ export default {
           value: '0340902103938840'
         },
         {
+          label: 'BIBII',
+          value: '3800195344918020'
+        },
+        {
           label: '烏鴉',
           value: '0903333396051784'
         },
@@ -458,7 +462,7 @@ export default {
         autoAddFriendArray: {
           script: '06-addFriend-array.ps1',
           params: {
-            device_index: this.addFriendId,
+            device_index: this.addFriendArrayId,
             target_path: this.getCardPath,
             fc: this.friendCodeArr ? `@(${this.friendCodeArr.split(',').map(code => `"${code.trim()}"`).join(',')})` : '',
           }
