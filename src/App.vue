@@ -4,6 +4,18 @@
     .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6 relative")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
+          img(src="../src/assets/img/COIN_100140_PIKACHU.png" class="w-7 h-7")
+          span(class="text-xl font-bold") 自動加好友2.0
+        .form-item(class="flex flex-row gap-2")
+          el-input(type="textarea" placeholder="貼上帳號資訊" v-model="accountInfo" resize="none" class="code-input")
+        .form-item(class="flex flex-row gap-2")
+          el-input(type="text" placeholder="好友代碼(用逗號隔開)" v-model="friendCodeForNewAddFriend")
+          el-button(type="primary" @click="handleSubmit('autoAddFriend2')") 產生指令
+        div(v-if="autoAddFriend2Command" class="flex flex-row gap-2 items-center")
+          span {{ autoAddFriend2Command }}
+          el-button(type="primary" @click="copyCommand(autoAddFriend2Command)" icon="el-icon-copy-document")
+      .item-wrap(class="flex flex-col gap-1")
+        div(class="flex flex-row items-center")
           img(v-if="secretBtn2" src="../src/assets/img/COIN_100240_PremiumSet.png" class="w-7 h-7" @click="secretBtn2 = !secretBtn2")
           img(v-else src="../src/assets/img/COIN_100250_MEW.png" class="w-7 h-7" @click="secretBtn2 = !secretBtn2")
           span(class="text-xl font-bold") 專案路徑
@@ -201,6 +213,7 @@ export default {
       autoAddFriendCommand: '',
       makeAccountPushCommand: '',
       autoAddFriendArrayCommand: '',
+      autoAddFriend2Command: '',
       cardType: '',
       cardTypeOptionList: [
         {
@@ -253,6 +266,10 @@ export default {
         },
       ],
       friendCodeArr: '',
+      accountInfo: '',
+      friendCodeForNewAddFriend: '',
+      accountInfoAccount: '',
+      accountInfoPassword: '',
     }
   },
   mounted() {
@@ -271,6 +288,7 @@ export default {
     this.cardType = localStorage.getItem('cardType') || '';
     this.friendCodeArr = localStorage.getItem('friendCodeArr') || '';
     this.addFriendArrayId = localStorage.getItem('addFriendArrayId') || '';
+    this.friendCodeForNewAddFriend = localStorage.getItem('friendCodeForNewAddFriend') || '';
   },
   watch: {
     createAccountItem: {
@@ -381,6 +399,22 @@ export default {
           ],
           command: 'autoAddFriendArrayCommand',
           storage: ['addFriendArrayId', 'getCardPath', 'friendCodeArr']
+        },
+        autoAddFriend2: {
+          fields: [
+          { 
+            key: 'accountInfo', 
+            message: '需要貼上正確格式的帳號資訊', 
+            validator: value => {
+              const accountPattern = /<string name="deviceAccount">(.*?)<\/string>/
+              const passwordPattern = /<string name="devicePassword">(.*?)<\/string>/
+              return accountPattern.test(value) && passwordPattern.test(value)
+            }
+          },
+            { key: 'friendCodeForNewAddFriend', message: '需要輸入好友代碼', validator: value => value !== '' }
+          ],
+          command: 'autoAddFriend2Command',
+          storage: ['friendCodeForNewAddFriend']
         }
       }
 
@@ -393,6 +427,31 @@ export default {
           this.$notify({
             title: '必填',
             message: field.message,
+            type: 'error'
+          })
+          return
+        }
+      }
+      // 特殊處理 autoAddFriend2 的帳號資訊
+      if (type === 'autoAddFriend2') {
+        try {
+          const accountMatch = this.accountInfo.match(/<string name="deviceAccount">(.*?)<\/string>/)
+          const passwordMatch = this.accountInfo.match(/<string name="devicePassword">(.*?)<\/string>/)
+          
+          if (!accountMatch || !passwordMatch) {
+            throw new Error('帳號資訊格式不正確')
+          }
+        
+          this.accountInfoAccount = accountMatch[1]
+          this.accountInfoPassword = passwordMatch[1]
+        
+          if (!this.accountInfoAccount || !this.accountInfoPassword) {
+            throw new Error('無法提取帳號或密碼')
+          }
+        } catch (error) {
+          this.$notify({
+            title: '錯誤',
+            message: `解析帳號資訊失敗：${error.message}`,
             type: 'error'
           })
           return
@@ -466,6 +525,14 @@ export default {
             target_path: this.getCardPath,
             fc: this.friendCodeArr ? `@(${this.friendCodeArr.split(',').map(code => `"${code.trim()}"`).join(',')})` : '',
           }
+        },
+        autoAddFriend2: {
+          script: 'friend_adder',
+          params: {
+            account: this.accountInfoAccount,
+            password: this.accountInfoPassword,
+            codes: this.friendCodeForNewAddFriend ? `${this.friendCodeForNewAddFriend.split(',').map(code => `${code.trim()}`).join(',')}` : '',
+          }
         }
       }
       const config = commandConfig[type]
@@ -475,6 +542,10 @@ export default {
     },
     formatCommand(script, params) {
       const paramStrings = Object.entries(params).map(([key, value]) => {
+        if (script === 'friend_adder') {
+          if (!value) return ''
+          return `--${key} ${value}`
+        }
         if (typeof value === 'boolean') {
           return value ? `-${key}` : ''
         }
@@ -538,5 +609,7 @@ export default {
 </script>
 
 <style>
-
+.code-input .el-textarea__inner {
+  height: 120px;
+}
 </style>
