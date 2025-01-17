@@ -1,13 +1,16 @@
 <template lang="pug">
   #app
     HeaderLayout
-    .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6 relative")
+    .container(class="w-[1200px] mx-auto my-4 flex flex-col gap-6 relative min-h-[1200px]")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
           img(src="../src/assets/img/COIN_100140_PIKACHU.png" class="w-7 h-7")
           span(class="text-xl font-bold") 自動加好友2.0
         .form-item(class="flex flex-row gap-2")
           el-input(type="textarea" placeholder="貼上帳號資訊" v-model="accountInfo" resize="none" class="code-input")
+        .form-item(class="flex flex-row gap-2")
+          el-select(v-model="selectFriendCodeForNewAddFriend" placeholder="請選擇" multiple collapse-tags)
+            el-option(v-for="item in FRIEND_CODE_LIST" :key="item.value" :label="item.label" :value="item.value")
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" placeholder="好友代碼(用逗號隔開)" v-model="friendCodeForNewAddFriend")
           el-button(type="primary" @click="handleSubmit('autoAddFriend2')") 產生指令
@@ -33,61 +36,61 @@
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" :placeholder="getCardRoute" v-model="getCardPath")
           el-button(type="primary" @click="savePath('getCard')") 儲存
-      .item-wrap(class="flex flex-col gap-1")
-        div(class="flex flex-row items-center")
-          img(src="../src/assets/img/COIN_100080_KAMEX.png" class="w-7 h-7")
-          span(class="text-xl font-bold") 創建帳號與啟動得卡驗證
-        .form-item(class="flex flex-row gap-3 items-end")
-          div(class="flex flex-col gap-2")
-            span 選擇創建帳號模擬器ID
-            el-select(v-model="createAccountItem" multiple placeholder="請選擇")
-              el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            span 選擇啟動得卡驗證模擬器ID
-            el-select(v-model="getCardItem" placeholder="請選擇" clearable)
-              el-option(v-for="item in getCardOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            span 選擇卡包
-            el-select(v-model="cardType" placeholder="請選擇" clearable)
-              el-option(v-for="item in cardTypeOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            el-checkbox(v-model="isEventFlg") 得卡挑戰活動
-          el-button(type="primary" @click="handleSubmit('createAndGetCard')") 產生指令
-        div(v-if="createAndGetCardCommand" class="flex flex-row gap-2 items-center")
-          span {{ createAndGetCardCommand }}
-          el-button(type="primary" @click="copyCommand(createAndGetCardCommand)" icon="el-icon-copy-document")
-      .item-wrap(class="flex flex-col gap-1")
-        div(class="flex flex-row items-center")
-          img(src="../src/assets/img/COIN_100040_LIZARDON.png" class="w-7 h-7")
-          span(class="text-xl font-bold") 單獨啟動創建帳號
-        .form-item(class="flex flex-row gap-3 items-end")
-          div(class="flex flex-col gap-2")
-            span 選擇創建帳號模擬器ID
-            el-select(v-model="createAccountItemAlone" placeholder="請選擇")
-              el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            span 選擇卡包
-            el-select(v-model="cardType" placeholder="請選擇" clearable)
-              el-option(v-for="item in cardTypeOptionList" :key="item.value" :label="item.label" :value="item.value")
-          el-button(type="primary" @click="handleSubmit('createAccountItemAlone')") 產生指令
-        div(v-if="createAccountCommand" class="flex flex-row gap-2 items-center")
-          span {{ createAccountCommand }}
-          el-button(type="primary" @click="copyCommand(createAccountCommand)" icon="el-icon-copy-document")
-      .item-wrap(class="flex flex-col gap-1")
-        div(class="flex flex-row items-center")
-          img(src="../src/assets/img/COIN_100030_NYARTH.png" class="w-7 h-7")
-          span(class="text-xl font-bold") 單獨啟動得卡驗證
-        .form-item(class="flex flex-row gap-3 items-end")
-          div(class="flex flex-col gap-2")
-            span 選擇啟動得卡驗證模擬器ID
-            el-select(v-model="getCardItemAlone" placeholder="請選擇" clearable)
-              el-option(v-for="item in getCardOptionList" :key="item.value" :label="item.label" :value="item.value")
-          div(class="flex flex-col gap-2")
-            el-checkbox(v-model="isEventFlg") 得卡挑戰活動
-          el-button(type="primary" @click="handleSubmit('getCardItemAlone')") 產生指令
-        div(v-if="getCardCommand" class="flex flex-row gap-2 items-center")
-          span {{ getCardCommand }}
-          el-button(type="primary" @click="copyCommand(getCardCommand)" icon="el-icon-copy-document")
+      //- .item-wrap(class="flex flex-col gap-1")
+      //-   div(class="flex flex-row items-center")
+      //-     img(src="../src/assets/img/COIN_100080_KAMEX.png" class="w-7 h-7")
+      //-     span(class="text-xl font-bold") 創建帳號與啟動得卡驗證
+      //-   .form-item(class="flex flex-row gap-3 items-end")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇創建帳號模擬器ID
+      //-       el-select(v-model="createAccountItem" multiple placeholder="請選擇")
+      //-         el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇啟動得卡驗證模擬器ID
+      //-       el-select(v-model="getCardItem" placeholder="請選擇" clearable)
+      //-         el-option(v-for="item in getCardOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇卡包
+      //-       el-select(v-model="cardType" placeholder="請選擇" clearable)
+      //-         el-option(v-for="item in cardTypeOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     div(class="flex flex-col gap-2")
+      //-       el-checkbox(v-model="isEventFlg") 得卡挑戰活動
+      //-     el-button(type="primary" @click="handleSubmit('createAndGetCard')") 產生指令
+      //-   div(v-if="createAndGetCardCommand" class="flex flex-row gap-2 items-center")
+      //-     span {{ createAndGetCardCommand }}
+      //-     el-button(type="primary" @click="copyCommand(createAndGetCardCommand)" icon="el-icon-copy-document")
+      //- .item-wrap(class="flex flex-col gap-1")
+      //-   div(class="flex flex-row items-center")
+      //-     img(src="../src/assets/img/COIN_100040_LIZARDON.png" class="w-7 h-7")
+      //-     span(class="text-xl font-bold") 單獨啟動創建帳號
+      //-   .form-item(class="flex flex-row gap-3 items-end")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇創建帳號模擬器ID
+      //-       el-select(v-model="createAccountItemAlone" placeholder="請選擇")
+      //-         el-option(v-for="item in createAccountOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇卡包
+      //-       el-select(v-model="cardType" placeholder="請選擇" clearable)
+      //-         el-option(v-for="item in cardTypeOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     el-button(type="primary" @click="handleSubmit('createAccountItemAlone')") 產生指令
+      //-   div(v-if="createAccountCommand" class="flex flex-row gap-2 items-center")
+      //-     span {{ createAccountCommand }}
+      //-     el-button(type="primary" @click="copyCommand(createAccountCommand)" icon="el-icon-copy-document")
+      //- .item-wrap(class="flex flex-col gap-1")
+      //-   div(class="flex flex-row items-center")
+      //-     img(src="../src/assets/img/COIN_100030_NYARTH.png" class="w-7 h-7")
+      //-     span(class="text-xl font-bold") 單獨啟動得卡驗證
+      //-   .form-item(class="flex flex-row gap-3 items-end")
+      //-     div(class="flex flex-col gap-2")
+      //-       span 選擇啟動得卡驗證模擬器ID
+      //-       el-select(v-model="getCardItemAlone" placeholder="請選擇" clearable)
+      //-         el-option(v-for="item in getCardOptionList" :key="item.value" :label="item.label" :value="item.value")
+      //-     div(class="flex flex-col gap-2")
+      //-       el-checkbox(v-model="isEventFlg") 得卡挑戰活動
+      //-     el-button(type="primary" @click="handleSubmit('getCardItemAlone')") 產生指令
+      //-   div(v-if="getCardCommand" class="flex flex-row gap-2 items-center")
+      //-     span {{ getCardCommand }}
+      //-     el-button(type="primary" @click="copyCommand(getCardCommand)" icon="el-icon-copy-document")
       .item-wrap(class="flex flex-col gap-1")
         div(class="flex flex-row items-center")
           img(v-if="secretBtn1" src="../src/assets/img/COIN_100240_PremiumSet.png" class="w-7 h-7" @click="secretBtn1 = !secretBtn1")
@@ -145,6 +148,8 @@
 </template>
 
 <script>
+import { getFriendCodes } from './api/friendCodes';
+import { FRIEND_CODE_LIST } from './constants/friendCodes'
 import HelloWorld from './components/HelloWorld.vue'
 import HeaderLayout from './components/HeaderLayout.vue'
 import FooterLayout from './components/FooterLayout.vue'
@@ -157,6 +162,7 @@ export default {
   },
   data() {
     return {
+      FRIEND_CODE_LIST,
       localRoute: 'C:\\Users\\88692\\Desktop\\pokemon-tcgp-helper',
       getCardRoute: 'C:\\Users\\88692\\Downloads\\PTCG',
       projectPath: '',
@@ -270,9 +276,11 @@ export default {
       friendCodeForNewAddFriend: '',
       accountInfoAccount: '',
       accountInfoPassword: '',
+      selectFriendCodeForNewAddFriend: [],
     }
   },
   mounted() {
+    // this.initFriendCode();
     this.getCardOptionList = this.createAccountOptionList;
     this.projectPath = localStorage.getItem('projectPath') || '';
     this.getCardPath = localStorage.getItem('getCardPath') || '';
@@ -288,7 +296,7 @@ export default {
     this.cardType = localStorage.getItem('cardType') || '';
     this.friendCodeArr = localStorage.getItem('friendCodeArr') || '';
     this.addFriendArrayId = localStorage.getItem('addFriendArrayId') || '';
-    this.friendCodeForNewAddFriend = localStorage.getItem('friendCodeForNewAddFriend') || '';
+    // this.friendCodeForNewAddFriend = localStorage.getItem('friendCodeForNewAddFriend') || '';
   },
   watch: {
     createAccountItem: {
@@ -299,7 +307,33 @@ export default {
         // this.getCardItem = '';
       },
       // immediate: true,
-    }
+    },
+    selectFriendCodeForNewAddFriend: {
+      handler(newVal) {
+        this.friendCodeForNewAddFriend = newVal.join(',');
+        // console.log('newVal', newVal);
+        // if (!this.friendCodeForNewAddFriend) {
+        //   // 如果原本是空的，直接賦值
+        //   this.friendCodeForNewAddFriend = newVal.join(',');
+        // } else {
+        //   // 取得現有的好友代碼陣列
+        //   const existingCodes = this.friendCodeForNewAddFriend.split(',').map(code => code.trim());
+        //   console.log('existingCodes', existingCodes);
+
+        //   // 過濾出不重複的新代碼
+        //   const newUniqueCodes = newVal.filter(code => !existingCodes.includes(code));
+        //   console.log('newUniqueCodes', newUniqueCodes);
+
+        //   // 如果有新的不重複代碼，則添加到現有代碼後面
+        //   if (newUniqueCodes.length > 0) {
+        //     this.friendCodeForNewAddFriend = [
+        //       ...existingCodes,
+        //       ...newUniqueCodes
+        //     ].join(',');
+        //   }
+        // }
+      },
+    },
   },
   methods: {
     savePath(type) {
@@ -604,6 +638,13 @@ export default {
         return
       });
     },
+    async initFriendCode() {
+      // https://docs.google.com/spreadsheets/d/e/2PACX-1vS_UPBN4vZVrODQZVxQLBDPVAAqPBlqbddynLSkbKDam1TagN8pGMC_lfOpwcVZvXW5uqNHcPMpaCX2/pubhtml
+      // https://spreadsheets.google.com/feeds/list/{excel_id}/{sheet}/public/values?alt=json
+      // https://spreadsheets.google.com/feeds/list/2PACX-1vS_UPBN4vZVrODQZVxQLBDPVAAqPBlqbddynLSkbKDam1TagN8pGMC_lfOpwcVZvXW5uqNHcPMpaCX2/1/public/values?alt=json
+      const data = await getFriendCodes();
+      console.log('data', data);
+    }
   }
 }
 </script>
