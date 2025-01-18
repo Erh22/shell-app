@@ -10,7 +10,7 @@
           el-input(type="textarea" placeholder="貼上帳號資訊" v-model="accountInfo" resize="none" class="code-input")
         .form-item(class="flex flex-row gap-2")
           el-select(v-model="selectFriendCodeForNewAddFriend" placeholder="請選擇" multiple collapse-tags)
-            el-option(v-for="item in FRIEND_CODE_LIST" :key="item.value" :label="item.label" :value="item.value")
+            el-option(v-for="item in zaoYaoFriendCodeList" :key="item.fc" :label="item.name" :value="item.fc")
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" placeholder="好友代碼(用逗號隔開)" v-model="friendCodeForNewAddFriend")
           el-button(type="primary" @click="handleSubmit('autoAddFriend2')") 產生指令
@@ -277,10 +277,11 @@ export default {
       accountInfoAccount: '',
       accountInfoPassword: '',
       selectFriendCodeForNewAddFriend: [],
+      zaoYaoFriendCodeList: [],
     }
   },
   mounted() {
-    // this.initFriendCode();
+    this.initFriendCode();
     this.getCardOptionList = this.createAccountOptionList;
     this.projectPath = localStorage.getItem('projectPath') || '';
     this.getCardPath = localStorage.getItem('getCardPath') || '';
@@ -639,11 +640,8 @@ export default {
       });
     },
     async initFriendCode() {
-      // https://docs.google.com/spreadsheets/d/e/2PACX-1vS_UPBN4vZVrODQZVxQLBDPVAAqPBlqbddynLSkbKDam1TagN8pGMC_lfOpwcVZvXW5uqNHcPMpaCX2/pubhtml
-      // https://spreadsheets.google.com/feeds/list/{excel_id}/{sheet}/public/values?alt=json
-      // https://spreadsheets.google.com/feeds/list/2PACX-1vS_UPBN4vZVrODQZVxQLBDPVAAqPBlqbddynLSkbKDam1TagN8pGMC_lfOpwcVZvXW5uqNHcPMpaCX2/1/public/values?alt=json
       const data = await getFriendCodes();
-      console.log('data', data);
+      this.zaoYaoFriendCodeList = data;
     }
   }
 }
