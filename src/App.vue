@@ -9,7 +9,7 @@
         .form-item(class="flex flex-row gap-2")
           el-input(type="textarea" placeholder="貼上帳號資訊" v-model="accountInfo" resize="none" class="code-input")
         .form-item(class="flex flex-row gap-2")
-          el-select(v-model="selectFriendCodeForNewAddFriend" placeholder="請選擇" multiple collapse-tags)
+          el-select(v-model="selectFriendCodeForNewAddFriend" placeholder="請選擇" multiple class="w-[100%]")
             el-option(v-for="item in zaoYaoFriendCodeList" :key="item.fc" :label="item.name" :value="item.fc")
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" placeholder="好友代碼(用逗號隔開)" v-model="friendCodeForNewAddFriend")
