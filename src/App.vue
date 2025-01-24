@@ -13,6 +13,7 @@
             el-option(v-for="item in zaoYaoFriendCodeList" :key="item.fc" :label="item.name" :value="item.fc")
         .form-item(class="flex flex-row gap-2")
           el-input(type="text" placeholder="好友代碼(用逗號隔開)" v-model="friendCodeForNewAddFriend")
+          el-button(type="success" @click="copyCommand(friendCodeForNewAddFriend)" icon="el-icon-copy-document")
           el-button(type="primary" @click="handleSubmit('autoAddFriend2')") 產生指令
         div(v-if="autoAddFriend2Command" class="flex flex-row gap-2 items-center")
           span {{ autoAddFriend2Command }}
